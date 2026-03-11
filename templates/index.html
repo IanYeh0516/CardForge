@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}CardForge{% endblock %}
+{% block content %}
+<div data-i18n-title="index.title"></div>
+<div class="row mb-4">
+    <div class="col">
+        <h2 data-i18n="index.title">工作階段</h2>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#uploadModal">
+            <i class="bi bi-file-earmark-excel"></i> <span data-i18n="index.import">匯入 Excel</span>
+        </button>
+        <form action="/session" method="POST" class="d-inline">
+            <input type="hidden" name="name" value="">
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle"></i> <span data-i18n="index.create">手動建立</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+{% if sessions %}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th data-i18n="index.col.name">名稱</th>
+            <th data-i18n="index.col.source">來源檔案</th>
+            <th data-i18n="index.col.count">人數</th>
+            <th data-i18n="index.col.created">建立時間</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in sessions %}
+        <tr>
+            <td><a href="/session/{{ s.id }}">{{ s.name }}</a></td>
+            <td>{{ s.source_file or '-' }}</td>
+            <td>{{ s.employee_count }}</td>
+            <td>{{ s.created_at[:16] }}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteSession({{ s.id }})">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="text-center text-muted py-5">
+    <p class="fs-5" data-i18n="index.empty">尚未建立任何工作階段</p>
+    <p data-i18n="index.empty.hint">請匯入 Excel 檔案或手動建立</p>
+</div>
+{% endif %}
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="index.modal.title">匯入 Excel 檔案</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label" data-i18n="index.modal.choose">選擇 .xlsx 檔案</label>
+                        <input type="file" class="form-control" name="file" accept=".xlsx" required>
+                    </div>
+                    <p class="text-muted small" data-i18n="index.modal.hint">第一列為欄位標題，之後的列為員工資料。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="index.modal.cancel">取消</button>
+                    <button type="submit" class="btn btn-primary" data-i18n="index.modal.upload">上傳</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

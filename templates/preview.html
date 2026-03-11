@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Preview{% endblock %}
+{% block content %}
+<div class="text-center" data-i18n-title="preview.title">
+    <h4 class="mb-3">{{ employee.field_data.get('Name', employee.field_data.get('name', '')) }}</h4>
+    <div class="mb-3">
+        <h6 data-i18n="preview.front">正面</h6>
+        <img src="/preview/{{ employee.id }}?side=front" class="border" alt="Front" style="max-width:500px">
+    </div>
+    <div class="mb-3">
+        <h6 data-i18n="preview.back">背面</h6>
+        <img src="/preview/{{ employee.id }}?side=back" class="border" alt="Back" style="max-width:500px">
+    </div>
+    <a href="/export/pdf/single/{{ employee.id }}" class="btn btn-success">
+        <i class="bi bi-file-pdf"></i> <span data-i18n="preview.downloadPdf">下載 PDF</span>
+    </a>
+    <a href="/session/{{ employee.session_id }}" class="btn btn-outline-secondary" data-i18n="preview.goBack">返回</a>
+</div>
+{% endblock %}

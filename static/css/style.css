@@ -1,0 +1,107 @@
+body { background: #f0f2f5; }
+
+/* ── Tiny button ─────────────────────────────── */
+.btn-xs {
+    padding: 2px 7px;
+    font-size: .75rem;
+    line-height: 1.4;
+    border-radius: 4px;
+}
+
+/* ── Employee table ──────────────────────────── */
+#empTable td[contenteditable="true"] {
+    cursor: text;
+    min-width: 70px;
+    white-space: nowrap;
+}
+#empTable td[contenteditable="true"]:focus {
+    background: #fff9e6;
+    outline: 2px solid #f5a623;
+}
+#empTable tbody tr.table-primary td { background: #dbeafe; }
+#empTable tbody tr.row-selected td { background: rgba(59,130,246,0.1); }
+#empTable .row-select-handle { cursor: pointer; user-select: none; }
+#empTable .row-select-handle:hover { background: rgba(59,130,246,0.15) !important; }
+
+/* ── Card canvas ─────────────────────────────── */
+.card-canvas-outer {
+    border-radius: 6px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.22);
+}
+
+/* ── Text overlay labels ─────────────────────── */
+.card-text-label {
+    position: absolute;
+    white-space: nowrap;
+    pointer-events: none;
+    line-height: 1.25;
+}
+
+/* ── Multi-select mode ────────────────────────────── */
+#dHandleOverlay.multi-select-mode .field-handle {
+    cursor: crosshair;
+}
+#dHandleOverlay.multi-select-mode .field-handle .fh-label {
+    opacity: 0.9;
+}
+
+/* ── Drag handles ──────────────────────────────────── */
+.field-handle {
+    position: absolute;
+    /* faint fill so the entire text area is visibly clickable */
+    background: rgba(0,0,0,.018);
+    border: 1.5px solid transparent;
+    border-radius: 3px;
+    min-width: 40px;
+    min-height: 20px;
+    cursor: grab;
+    user-select: none;
+    pointer-events: all;
+    z-index: 10;
+    transition: border-color .12s, background .12s;
+}
+
+/* Hover → show field-color border */
+.field-handle:hover {
+    border-color: var(--fh-color, #888);
+    background: rgba(0,0,0,.04);
+}
+
+/* SELECTED → light blue fill + blue border */
+.field-handle.active {
+    border-color: #3b82f6 !important;
+    background: rgba(59, 130, 246, 0.13) !important;
+    z-index: 20;
+}
+.field-handle.active .fh-label {
+    border-color: #3b82f6;
+    background: #3b82f6;
+    color: #fff;
+    opacity: 1;
+}
+
+.field-handle.dragging { cursor: grabbing; z-index: 30; }
+
+/* Tab label: always visible above top-left corner */
+.field-handle .fh-label {
+    position: absolute;
+    top: -21px;
+    left: -2px;
+    border: 1.5px solid var(--fh-color, #888);
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    background: #fff;
+    color: #555;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1;
+    padding: 3px 8px;
+    white-space: nowrap;
+    pointer-events: auto;   /* allow clicks on the tab to bubble up to handle */
+    opacity: 0.55;
+    transition: opacity .12s, background .12s, color .12s;
+}
+.field-handle:hover .fh-label,
+.field-handle.dragging .fh-label {
+    opacity: 1;
+}

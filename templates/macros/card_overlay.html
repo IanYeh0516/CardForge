@@ -1,0 +1,26 @@
+{# Reusable card text overlay — used in both design and list tabs #}
+{% macro card_text_overlay(overlay_id, card_config, first_emp) %}
+<div id="{{ overlay_id }}" style="position:absolute;inset:0;pointer-events:none;">
+{% if card_config and card_config.field_layout %}
+{% for field in card_config.field_layout %}
+<span class="card-text-label"
+      data-key="{{ field.key }}"
+      data-font="{{ field.get('font', 'NotoSansTC') }}"
+      data-template="{{ field.get('template', '') }}"
+      style="left:{{ field.x }}%; top:{{ field.y }}%;
+             color:{{ field.color }};
+             font-size:{{ (field.font_size * 96/72) | round(1) }}px;
+             font-weight:{{ 'bold' if field.bold else 'normal' }};
+             text-align:{{ field.align }};">
+    {% if field.get('template') and first_emp %}
+        {{ field.template | replace('{Department}', first_emp.field_data.get('Department','')) | replace('{Title}', first_emp.field_data.get('Title','')) }}
+    {% elif overlay_id == 'dTextOverlay' %}
+        {{ first_emp.field_data.get(field.key, field.label) if first_emp else field.label }}
+    {% else %}
+        {{ first_emp.field_data.get(field.key, '') if first_emp else '' }}
+    {% endif %}
+</span>
+{% endfor %}
+{% endif %}
+</div>
+{% endmacro %}
