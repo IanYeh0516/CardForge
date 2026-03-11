@@ -2,7 +2,7 @@
 
 **CardForge** is a free, open-source, self-hosted business card generator that converts Excel spreadsheets into print-ready PDF and JPEG name cards in seconds — no design software required.
 
-> 免費開源的批次名片生成工具，將 Excel 試算表一鍵轉換為印刷級 PDF 名片，無需任何設計軟體。
+> 免費開源的批次名片生成工具，把 Excel 員工名單一鍵轉換為印刷級 PDF 名片，不需要任何設計軟體。
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-3.0+-black?logo=flask)](https://flask.palletsprojects.com)
@@ -28,117 +28,133 @@ If your employee data is already in a spreadsheet (it always is), your business 
 
 ---
 
-## Features
+## Features / 功能特色
 
-- **Excel Import** — Upload `.xlsx`, columns auto-mapped to card fields
-- **Live Visual Editor** — Drag fields, change font size, color, and alignment in real time
-- **Batch Export** — Generate PDF + JPEG for every row at once, 300 DPI print quality
-- **Front & Back Template Support** — Swap background images freely per session
-- **Multi-Session Management** — Keep different departments or designs as separate projects
-- **Cross-platform** — macOS, Windows, Linux with a single startup command
-
----
-
-## 功能特色
-
-- **Excel 匯入** — 上傳 `.xlsx`，自動對應欄位至名片設計
-- **即時視覺化編輯器** — 拖曳欄位位置、即時調整字型大小、顏色與對齊
-- **批次匯出** — 一次生成所有員工的 PDF + JPEG，300 DPI 印刷品質
-- **正背面模板支援** — 自由替換名片背景底圖
-- **多專案管理** — 不同部門、不同設計，各自獨立儲存
-- **跨平台** — macOS、Windows、Linux 一行指令啟動
+| | English | 中文 |
+|---|---------|------|
+| 📥 | **Excel Import** — Upload `.xlsx`, columns auto-mapped to card fields | **Excel 匯入** — 上傳 `.xlsx`，欄位自動對應 |
+| 🎨 | **Live Visual Editor** — Drag fields, adjust font, color, alignment in real time | **即時視覺化編輯** — 拖曳欄位、即時調整字型大小與顏色 |
+| 📄 | **Batch Export** — PDF + JPEG for every row, 300 DPI print quality | **批次匯出** — 每位員工各一份 PDF + JPEG，300 DPI |
+| 🖼️ | **Custom Templates** — Upload your own front & back backgrounds | **自訂底圖** — 自由替換正面、背面名片背景 |
+| 📁 | **Multi-Session** — Keep departments or designs as separate projects | **多專案管理** — 不同部門各自獨立儲存 |
+| 💻 | **Cross-platform** — macOS, Windows, Linux | **跨平台** — macOS、Windows、Linux |
 
 ---
 
-## Quick Start
+## Quick Start / 安裝教學
 
-### Requirements
+> **First-time setup takes about 5–10 minutes. After that, just double-click to start.**
+>
+> 第一次安裝大約 5–10 分鐘，之後每次只要雙擊啟動。
 
-- Python 3.10 or higher
-- Windows users: Python is installed automatically on first run
+### Step 1 — Download / 下載
 
-### Run the App
+**[⬇ Download CardForge (ZIP)](https://github.com/IanYeh0516/CardForge/archive/refs/heads/master.zip)**
+
+Download the ZIP file, then extract it:
+- **Windows**: Right-click the ZIP → "Extract All"
+- **macOS**: Double-click the ZIP
+
+下載 ZIP 檔案後解壓縮。Windows 按右鍵選「解壓縮全部」，macOS 直接雙擊。
+
+---
+
+### Step 2 — Install Python (first time only) / 安裝 Python（第一次才需要）
+
+CardForge needs **Python 3.10+** to run. If you've never installed it:
+
+**[➡ Download Python](https://www.python.org/downloads/)**
+
+CardForge 需要一個叫「Python」的免費程式來執行，如果你從沒裝過，請先下載安裝。
+
+<details>
+<summary><strong>Windows 安裝注意事項</strong></summary>
+
+1. 下載後雙擊安裝檔
+2. **安裝畫面最下方有一個勾選框「Add Python to PATH」，一定要打勾！** 沒勾的話 CardForge 會無法啟動
+3. 點「Install Now」，等待安裝完成
+
+</details>
+
+<details>
+<summary><strong>macOS 安裝注意事項</strong></summary>
+
+1. 下載後雙擊 `.pkg` 檔案
+2. 按照畫面指示一路點「繼續」直到安裝完成
+3. 如果系統詢問是否安裝「開發者工具」，請點「安裝」
+
+</details>
+
+---
+
+### Step 3 — Start CardForge / 啟動
+
+#### Windows
+
+Open the extracted folder, find **`start.bat`**, and double-click it.
+
+打開解壓縮後的資料夾，找到 `start.bat`，雙擊它。
+
+> **Windows 可能會跳出安全性警告**（藍色畫面「Windows 已保護您的電腦」），這是正常的。點「更多資訊」→「仍要執行」即可。
+>
+> A black window will appear — this is normal, don't close it. Your browser will open automatically after a few seconds.
+
+#### macOS
+
+Open **Terminal** (press `Command + Space`, type "Terminal", press Enter), then run:
+
+打開終端機（按 `Command + 空白鍵`，輸入「終端機」，按 Enter），然後貼上以下指令：
 
 ```bash
-# macOS / Linux
-./start.sh
-
-# Windows
-start.bat
+cd ~/Downloads/CardForge-master && bash start.sh
 ```
 
-The app opens at `http://localhost:5001` automatically (configurable via `.env`).
+> Your browser will open automatically. If it doesn't, go to `http://localhost:5001` manually.
+>
+> 瀏覽器會自動開啟。如果沒有，請手動在網址列輸入 `localhost:5001`。
 
 ---
 
-## How to Use
+### Step 4 — Start making cards / 開始做名片
 
-### Step 1 — Prepare Your Excel File
+1. Click **"Import Excel"** / 點「匯入 Excel」
+2. Upload your `.xlsx` employee list / 上傳員工名單
+3. Customize in the visual editor / 在編輯器裡拖拉調整
+4. Click **"Export All"** / 點「匯出全部」
 
-Create an `.xlsx` file with one employee per row. Use `example.xlsx` in this repo as a reference.
-
-| Column | Field | Example |
-|--------|-------|---------|
-| 欄位1 | Employee ID | `001` |
-| 欄位2 | Chinese Name | `王小明` |
-| 欄位3 | English Name | `Ming Wang` |
-| 欄位4 | Department | `Engineering` |
-| 欄位5 | Title | `Engineer` |
-| 欄位6 | Department (EN) | `Engineering Dept.` |
-| 欄位7 | Title (EN) | `Software Engineer` |
-| 欄位8 | Email | `ming@company.com` |
-| 欄位9 | Mobile | `+886-912-345-678` |
-| 欄位10 | Extension | `#201` |
-
-### Step 2 — Upload and Create a Session
-
-1. Open `http://localhost:5001`
-2. Click **New Session**
-3. Upload your `.xlsx` file
-4. All employee records are imported automatically
-
-### Step 3 — Customize in the Visual Editor
-
-- Drag text fields to any position on the card preview
-- Adjust font size, color, and alignment per field
-- Switch fonts: **Noto Sans TC** for Chinese, **Maven Pro** for English
-- Upload your own front and back background images
-- Preview any individual card before exporting
-
-### Step 4 — Batch Export
-
-Click **Export All** to generate for every employee:
-
-- `name.pdf` — 300 DPI, print-ready
-- `name.jpg` — JPEG preview
-
-Download and send directly to your printer.
+> You can try with the included `example.xlsx` file first.
+>
+> 可以先用資料夾裡的 `example.xlsx` 試試看。
 
 ---
 
-## 操作說明
+## Excel Format / Excel 格式
 
-### 第一步 — 準備 Excel
+Create an `.xlsx` file with one employee per row. Use `example.xlsx` as a reference.
 
-以 `example.xlsx` 為範本，每列填入一位員工資料，欄位順序如上表。
+以 `example.xlsx` 為範本，每列填入一位員工資料。
 
-### 第二步 — 上傳建立專案
+| Column 欄位 | Field 對應 | Example 範例 |
+|-------------|-----------|-------------|
+| 欄位1 | Employee ID 員工編號 | `001` |
+| 欄位2 | Chinese Name 中文姓名 | `王小明` |
+| 欄位3 | English Name 英文姓名 | `Ming Wang` |
+| 欄位4 | Department 部門 | `Engineering` |
+| 欄位5 | Title 職稱 | `Engineer` |
+| 欄位6 | Department (EN) 部門英文 | `Engineering Dept.` |
+| 欄位7 | Title (EN) 職稱英文 | `Software Engineer` |
+| 欄位8 | Email 電子信箱 | `ming@company.com` |
+| 欄位9 | Mobile 手機 | `+886-912-345-678` |
+| 欄位10 | Extension 分機 | `#201` |
 
-1. 開啟 `http://localhost:5001`
-2. 點擊「新增專案」
-3. 上傳 `.xlsx` 檔案
-4. 系統自動匯入所有員工資料
+---
 
-### 第三步 — 視覺化編輯
+## Card Specifications / 名片規格
 
-- 在名片預覽上直接拖曳欄位位置
-- 個別調整字型大小、顏色、對齊方式
-- 上傳自己的名片底圖（正面 / 背面）
-- 即時預覽單張名片效果
-
-### 第四步 — 批次匯出
-
-點擊「匯出全部」，每位員工各自生成 PDF 與 JPEG，直接送印。
+- **Size 尺寸:** 90 × 54 mm (standard business card)
+- **Print DPI 印刷解析度:** 300
+- **Preview DPI 預覽解析度:** 150
+- **Export formats 匯出格式:** PDF, JPEG
 
 ---
 
@@ -155,103 +171,90 @@ Download and send directly to your printer.
 
 ---
 
-## Card Specifications
-
-- **Size:** 90 × 54 mm (standard business card)
-- **Print DPI:** 300
-- **Preview DPI:** 150
-- **Export formats:** PDF, JPEG
-
----
-
 ## FAQ / 常見問題
 
-### How do I import my Excel file? / 怎麼匯入 Excel？
+<details>
+<summary><strong>How do I import my Excel file? / 怎麼匯入 Excel？</strong></summary>
 
 1. Make sure your file is saved as `.xlsx` (not `.xls` or `.csv`)
 2. Open the app at `http://localhost:5001`
 3. Click **New Session** → **Upload File**
-4. The app reads the first row as column headers and imports all remaining rows as employee records
+4. The app reads the first row as column headers and imports all remaining rows
 
-確認檔案格式為 `.xlsx`，點擊「新增專案」→「上傳檔案」，系統會自動讀取第一列為欄位標題，其餘列為員工資料。
+確認檔案格式為 `.xlsx`，點擊「匯入 Excel」→「上傳檔案」，系統自動讀取第一列為欄位標題，其餘列為員工資料。
 
----
+</details>
 
-### How do I export cards? / 怎麼匯出名片？
+<details>
+<summary><strong>How do I export cards? / 怎麼匯出名片？</strong></summary>
 
 After customizing in the editor, click **Export All** in the top toolbar.
 
-- Each employee gets their own `名字.pdf` (print-ready, 300 DPI) and `名字.jpg` (preview)
+- Each employee gets their own `name.pdf` (300 DPI) and `name.jpg` (preview)
 - Files are saved to `data/exports/` and bundled for download
 
-完成編輯後，點擊工具列的「匯出全部」，每位員工各自生成一份 PDF 與 JPEG，儲存於 `data/exports/` 資料夾。
+完成編輯後點「匯出全部」，每位員工各自生成 PDF 與 JPEG，儲存於 `data/exports/`。
 
----
+</details>
 
-### How do I add a new field to the card layout? / 怎麼在名片上新增欄位？
+<details>
+<summary><strong>How do I add a new field to the card? / 怎麼在名片上新增欄位？</strong></summary>
 
-This is where CardForge shines. Here's the full workflow:
+1. **Add a column** to your Excel (e.g. `Line ID`) / 在 Excel 新增一欄
+2. **Re-upload** the file to create a new session / 重新上傳建立新 Session
+3. **Click "Add Field"** in the editor — the dropdown lists all your Excel columns automatically / 點「新增欄位」，下拉選單自動抓取所有 Excel 欄位
+4. **Drag** the new field to position it / 拖曳到名片上的位置
 
-**Step 1 — Add the column to your Excel**
+> CardForge reads your Excel headers directly. Any column you add immediately appears as an option — no config files needed.
+>
+> CardForge 直接讀取 Excel 表頭。加了什麼欄位，編輯器裡就會出現什麼選項，不需要改任何設定檔。
 
-Add a new column header to your `.xlsx` file, for example `Line ID`.
+</details>
 
-**Step 2 — Re-upload or refresh the session**
+<details>
+<summary><strong>Can I use my own card background? / 可以用自己的名片底圖嗎？</strong></summary>
 
-Upload the updated file to create a new session (or re-import into an existing one).
+Yes. Click **"Change Template"** to upload your own PNG or JPEG for front and back. Recommended resolution: **4083 × 2450 px** at 300 DPI.
 
-**Step 3 — Add a text frame in the editor**
+可以。點擊「更換模板」，分別上傳正面與背面底圖。建議解析度：**4083 × 2450 像素**，300 DPI。
 
-In the visual editor, click **「新增欄位」(Add Field)**. A dropdown will automatically list every column name from your Excel — just select the one you want.
+</details>
 
-> CardForge reads your Excel headers directly. Any column you add to the spreadsheet immediately appears as an option in the editor — no config file editing needed.
-
-**Step 4 — Position it**
-
-Drag the new text frame to where you want it on the card, then adjust font, size, and color.
-
----
-
-這是 CardForge 最核心的功能，流程如下：
-
-**第一步** — 在 Excel 新增一欄，填好欄位名稱（例如 `Line ID`）
-
-**第二步** — 重新上傳或建立新的 Session
-
-**第三步** — 在編輯器點擊「新增欄位」，下拉選單會**自動抓取 Excel 的所有欄位名稱**，直接選你要的那個
-
-> CardForge 會直接讀取 Excel 表頭。Excel 加了什麼欄位，編輯器裡就會出現什麼選項，不需要改任何設定檔。
-
-**第四步** — 拖曳到名片上的位置，調整字型與大小
-
----
-
-### Can I use my own card background? / 可以用自己的名片底圖嗎？
-
-Yes. In the editor, click **「更換模板」(Change Template)** to upload your own PNG or JPEG for the front and back of the card. Recommended resolution: **4083 × 2450 px** at 300 DPI.
-
-可以。在編輯器點擊「更換模板」，分別上傳正面與背面的底圖。建議解析度：**4083 × 2450 像素**，300 DPI。
-
----
-
-### Does it work offline? / 可以離線使用嗎？
+<details>
+<summary><strong>Does it work offline? / 可以離線使用嗎？</strong></summary>
 
 Yes, completely. CardForge runs entirely on your local machine. No internet connection is required after the initial setup.
 
-可以，完全離線。CardForge 在本機執行，初次安裝後不需要網路連線。
+可以，完全離線。初次安裝後不需要網路連線。
 
----
+</details>
 
-### What if my card has both Chinese and English text? / 名片同時有中英文怎麼辦？
+<details>
+<summary><strong>What about Chinese + English text? / 名片同時有中英文怎麼辦？</strong></summary>
 
 CardForge ships with two font families:
 
-- **Noto Sans TC** — full CJK support (Chinese, Japanese, Korean)
-- **Maven Pro** — clean Latin typeface for English fields
+- **Noto Sans TC** — CJK support (Chinese, Japanese, Korean)
+- **Maven Pro** — clean Latin typeface for English
 
-You can assign a different font to each field individually in the editor. Mix and match freely.
+You can assign a different font to each field individually. Mix and match freely.
 
-CardForge 內建兩套字型：Noto Sans TC（支援中文）與 Maven Pro（英文）。每個欄位可以分別指定字型，中英文混排完全沒問題。
+內建 Noto Sans TC（中文）與 Maven Pro（英文），每個欄位可以分別指定字型。
+
+</details>
+
+<details>
+<summary><strong>start.bat doesn't work / start.bat 無法執行？</strong></summary>
+
+**Windows security warning**: If you see "Windows protected your PC" (blue screen), click "More info" → "Run anyway". This is normal for downloaded scripts.
+
+**Python not found**: Make sure Python is installed and you checked "Add Python to PATH" during installation. If you missed it, reinstall Python and check the box this time.
+
+**Windows 安全性警告**：看到藍色畫面「Windows 已保護您的電腦」，點「更多資訊」→「仍要執行」。
+
+**找不到 Python**：確認安裝時有勾選「Add Python to PATH」。如果漏了，重新安裝 Python 並勾選。
+
+</details>
 
 ---
 
