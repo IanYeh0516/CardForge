@@ -1,4 +1,6 @@
 import os
+import subprocess
+import platform
 
 from flask import Flask
 from dotenv import load_dotenv
@@ -29,8 +31,28 @@ app.register_blueprint(export_bp)
 app.register_blueprint(config_bp)
 
 
+def _kill_port(port):
+    """Silently kill any process occupying the given port."""
+    system = platform.system()
+    try:
+        if system == 'Windows':
+            result = subprocess.run(['netstat', '-ano'], capture_output=True, text=True)
+            for line in result.stdout.splitlines():
+                if f':{port} ' in line and 'LISTENING' in line:
+                    pid = line.strip().split()[-1]
+                    subprocess.run(['taskkill', '/PID', pid, '/F'], capture_output=True)
+        else:
+            result = subprocess.run(['lsof', '-ti', f':{port}'], capture_output=True, text=True)
+            for pid in result.stdout.strip().split('\n'):
+                if pid:
+                    subprocess.run(['kill', '-9', pid])
+    except Exception:
+        pass
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
+    _kill_port(port)
     debug = os.environ.get('FLASK_DEBUG', 'true').lower() in ('true', '1', 'yes')
     print(f"CardForge started: http://localhost:{port}")
     app.run(debug=debug, port=port)
