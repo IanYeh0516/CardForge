@@ -173,6 +173,13 @@ def delete_employee(employee_id):
     conn.close()
 
 
+def delete_employees_by_session(session_id):
+    conn = get_db()
+    conn.execute("DELETE FROM employees WHERE session_id = ?", (session_id,))
+    conn.commit()
+    conn.close()
+
+
 # --- Card Config ---
 
 def get_card_config(session_id):

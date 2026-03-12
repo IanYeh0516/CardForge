@@ -13,7 +13,11 @@
              font-weight:{{ 'bold' if field.bold else 'normal' }};
              text-align:{{ field.align }};">
     {% if field.get('template') and first_emp %}
-        {{ field.template | replace('{Department}', first_emp.field_data.get('Department','')) | replace('{Title}', first_emp.field_data.get('Title','')) }}
+        {% set ns = namespace(text=field.template) %}
+        {% for k, v in first_emp.field_data.items() %}
+            {% set ns.text = ns.text | replace('{' ~ k ~ '}', v) %}
+        {% endfor %}
+        {{ ns.text }}
     {% elif overlay_id == 'dTextOverlay' %}
         {{ first_emp.field_data.get(field.key, field.label) if first_emp else field.label }}
     {% else %}

@@ -157,6 +157,25 @@ function _fillPropPanel(key) {
     const field = fieldLayout.find(f => f.key === key);
     if (!field) return;
     document.getElementById('ppTitle').textContent = field.label || key;
+
+    // Populate data column dropdown
+    const ppKey = document.getElementById('ppKey');
+    ppKey.innerHTML = '';
+    FIELD_KEYS.forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = k;
+        ppKey.appendChild(opt);
+    });
+    if (!FIELD_KEYS.includes(field.key)) {
+        const opt = document.createElement('option');
+        opt.value = field.key;
+        opt.textContent = field.key + ' (custom)';
+        ppKey.appendChild(opt);
+    }
+    ppKey.value = field.key;
+
+    document.getElementById('ppTemplate').value = field.template || '';
     document.getElementById('ppFont').value     = field.font      || 'NotoSansTC';
     document.getElementById('ppFontSize').value = field.font_size || 14;
     document.getElementById('ppColor').value    = field.color     || '#333333';
@@ -260,6 +279,24 @@ function syncColorHex(val) {
     }
 }
 
+function _getPreviewData() {
+    const tr = document.querySelector('#empTable tbody tr.table-primary');
+    const data = {};
+    if (tr) tr.querySelectorAll('td[data-key]').forEach(td => data[td.dataset.key] = td.textContent.trim());
+    return data;
+}
+
+function _updateFieldPreviewText(lbl, field) {
+    if (!lbl) return;
+    const data = _getPreviewData();
+    const tmpl = field.template;
+    if (tmpl) {
+        lbl.textContent = tmpl.replace(/\{([^}]+)\}/g, (_, k) => data[k] || '');
+    } else {
+        lbl.textContent = data[field.key] || field.label;
+    }
+}
+
 function applyProp(prop, value) {
     _pushUndo();
     const targets = selectedKeys.size > 0
@@ -268,9 +305,14 @@ function applyProp(prop, value) {
     if (!targets.length) return;
 
     targets.forEach(field => {
+        const oldKey = field.key;
         field[prop] = value;
-        const lbl = document.querySelector(`#dTextOverlay .card-text-label[data-key="${field.key}"]`);
-        const hdl = document.querySelector(`#dHandleOverlay .field-handle[data-key="${field.key}"]`);
+
+        // For key changes, DOM lookup must use oldKey (before mutation)
+        const queryKey = (prop === 'key') ? oldKey : field.key;
+        const lbl = document.querySelector(`#dTextOverlay .card-text-label[data-key="${queryKey}"]`);
+        const hdl = document.querySelector(`#dHandleOverlay .field-handle[data-key="${queryKey}"]`);
+
         if (lbl) {
             if (prop === 'color')     lbl.style.color      = value;
             if (prop === 'font_size') lbl.style.fontSize   = (value * PT_TO_PX) + 'px';
@@ -288,6 +330,27 @@ function applyProp(prop, value) {
             if (prop === 'x') hdl.style.left = value + '%';
             if (prop === 'y') hdl.style.top  = value + '%';
         }
+
+        // Key rename: update data-key on all related DOM elements
+        if (prop === 'key') {
+            if (lbl) lbl.dataset.key = value;
+            if (hdl) hdl.dataset.key = value;
+            const fli = document.querySelector(`.field-list-item[data-key="${oldKey}"]`);
+            if (fli) fli.dataset.key = value;
+            const lLbl = document.querySelector(`#lTextOverlay .card-text-label[data-key="${oldKey}"]`);
+            if (lLbl) lLbl.dataset.key = value;
+            if (selectedKeys.has(oldKey)) { selectedKeys.delete(oldKey); selectedKeys.add(value); }
+            if (selectedKey === oldKey) selectedKey = value;
+            _updateFieldPreviewText(lbl, field);
+            if (lLbl) _updateFieldPreviewText(lLbl, field);
+        }
+
+        // Template change: update preview text
+        if (prop === 'template') {
+            if (lbl) { lbl.dataset.template = value; _updateFieldPreviewText(lbl, field); }
+            const lLbl = document.querySelector(`#lTextOverlay .card-text-label[data-key="${field.key}"]`);
+            if (lLbl) { lLbl.dataset.template = value; _updateFieldPreviewText(lLbl, field); }
+        }
     });
 
     if (selectedKeys.size === 1 && prop === 'color') {
@@ -299,10 +362,45 @@ function applyProp(prop, value) {
 }
 
 function addField() {
-    const key = prompt(t('msg.newFieldName'));
-    if (!key || !key.trim()) return;
-    fieldLayout.push({ key: key.trim(), label: key.trim(), x: 50, y: 50, font_size: 14, color: '#333333', align: 'left', bold: false, font: 'NotoSansTC' });
+    const picker = document.getElementById('addFieldPicker');
+    const select = document.getElementById('addFieldSelect');
+    const custom = document.getElementById('addFieldCustom');
+    select.innerHTML = '';
+    const usedKeys = new Set(fieldLayout.map(f => f.key));
+    FIELD_KEYS.forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = usedKeys.has(k) ? k + ' ✓' : k;
+        select.appendChild(opt);
+    });
+    const customOpt = document.createElement('option');
+    customOpt.value = '__custom__';
+    customOpt.textContent = t('pp.customOption');
+    select.appendChild(customOpt);
+    select.onchange = () => custom.classList.toggle('d-none', select.value !== '__custom__');
+    custom.classList.add('d-none');
+    custom.value = '';
+    picker.classList.remove('d-none');
+}
+
+function confirmAddField() {
+    const select = document.getElementById('addFieldSelect');
+    const custom = document.getElementById('addFieldCustom');
+    let key;
+    if (select.value === '__custom__') {
+        key = custom.value.trim();
+        if (!key) return;
+    } else {
+        key = select.value;
+    }
+    fieldLayout.push({ key, label: key, x: 50, y: 50, font_size: 14, color: '#333333', align: 'left', bold: false, font: 'NotoSansTC' });
+    cancelAddField();
     _saveTabAndReload();
+}
+
+function cancelAddField() {
+    document.getElementById('addFieldPicker').classList.add('d-none');
+    document.getElementById('addFieldCustom').value = '';
 }
 
 function removeField(key, e) {

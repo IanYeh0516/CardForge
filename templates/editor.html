@@ -44,10 +44,8 @@ const FONT_CSS = {
         <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('excelFileInput').click()">
             <i class="bi bi-file-earmark-excel"></i> <span data-i18n="btn.import">匯入 Excel</span>
         </button>
-        <form id="excelUploadForm" action="/upload" method="POST" enctype="multipart/form-data" class="d-none">
-            <input type="file" id="excelFileInput" name="file" accept=".xlsx"
-                   onchange="if(this.files.length) this.closest('form').submit()">
-        </form>
+        <input type="file" id="excelFileInput" name="file" accept=".xlsx" class="d-none"
+               onchange="if(this.files.length) startImport(this.files[0])">
         <div class="btn-group btn-group-sm" role="group">
             <input type="radio" class="btn-check" name="exportMode" id="modeCombined" autocomplete="off">
             <label class="btn btn-outline-dark" for="modeCombined" data-i18n="mode.combined">合併</label>
@@ -290,6 +288,21 @@ const FONT_CSS = {
             </div>
             <div class="card-body p-2" id="ppBody" style="opacity:.4; pointer-events:none;">
                 <div class="mb-2">
+                    <label class="form-label small mb-1" data-i18n="pp.dataColumn">資料欄位</label>
+                    <select class="form-select form-select-sm" id="ppKey" onchange="applyProp('key',this.value)">
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small mb-1" data-i18n="pp.template">模板</label>
+                    <input type="text" class="form-control form-control-sm" id="ppTemplate"
+                           placeholder="{欄位1} | {欄位2}"
+                           data-i18n="pp.templateHint" data-i18n-attr="placeholder"
+                           oninput="applyProp('template',this.value)">
+                    <div class="form-text" style="font-size:10px" data-i18n="pp.templateHelp">
+                        留空則直接讀取資料欄位值。可用 {欄位名} 語法。
+                    </div>
+                </div>
+                <div class="mb-2">
                     <label class="form-label small mb-1" data-i18n="pp.font">字型</label>
                     <select class="form-select form-select-sm" id="ppFont" onchange="applyProp('font',this.value)">
                         <option value="NotoSansTC">Noto Sans TC</option>
@@ -363,14 +376,24 @@ const FONT_CSS = {
                 <div class="d-flex justify-content-between align-items-center rounded px-2 py-1 mb-1 field-list-item"
                      data-key="{{ field.key }}"
                      style="cursor:pointer; border-left:3px solid {{ field.color }}; background:{{ field.color }}15;"
-                     onclick="selectField('{{ field.key }}')">
+                     onclick="selectField(this.dataset.key)">
                     <span class="small fw-semibold" style="color:{{ field.color }}">{{ field.label }}</span>
-                    <button class="btn btn-xs btn-outline-danger" onclick="removeField('{{ field.key }}',event)">
+                    <button class="btn btn-xs btn-outline-danger" onclick="removeField(this.closest('.field-list-item').dataset.key,event)">
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
                 {% endfor %}
                 {% endif %}
+            </div>
+            <div id="addFieldPicker" class="d-none p-2 border-top">
+                <label class="form-label small mb-1" data-i18n="pp.pickColumn">選擇資料欄位</label>
+                <select class="form-select form-select-sm mb-1" id="addFieldSelect"></select>
+                <input type="text" class="form-control form-control-sm mb-1 d-none" id="addFieldCustom"
+                       placeholder="自訂欄位名稱" data-i18n="pp.customFieldName" data-i18n-attr="placeholder">
+                <div class="d-flex gap-1">
+                    <button class="btn btn-xs btn-primary flex-fill" onclick="confirmAddField()" data-i18n="pp.addConfirm">確認</button>
+                    <button class="btn btn-xs btn-outline-secondary flex-fill" onclick="cancelAddField()" data-i18n="pp.addCancel">取消</button>
+                </div>
             </div>
         </div>
 
@@ -412,6 +435,34 @@ const FONT_CSS = {
 </div>{# end tabDesign #}
 
 </div>{# end tab-content #}
+
+{# Import Mapping Modal #}
+<div class="modal fade" id="importMappingModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" data-i18n="import.title">欄位對應</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted small" id="importRowCount"></p>
+        <table class="table table-sm" id="mappingTable">
+          <thead><tr>
+            <th data-i18n="import.excelCol">Excel 欄位</th>
+            <th style="width:40px" class="text-center">&rarr;</th>
+            <th data-i18n="import.layoutField">名片欄位</th>
+            <th style="width:60px"></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="import.cancel">取消</button>
+        <button class="btn btn-primary" onclick="confirmImport()" data-i18n="import.confirm">確認匯入</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {# Export toast #}
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index:9999">
