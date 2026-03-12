@@ -12,12 +12,7 @@ build/
 .env
 
 # Data (user-generated, not for repo)
-data/namecard.db
-data/namecard.db-wal
-data/namecard.db-shm
-data/exports/
-data/session_*_config.json
-data/card_templates/
+data/
 
 # OS
 .DS_Store
