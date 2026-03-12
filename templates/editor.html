@@ -48,6 +48,12 @@ const FONT_CSS = {
             <input type="file" id="excelFileInput" name="file" accept=".xlsx"
                    onchange="if(this.files.length) this.closest('form').submit()">
         </form>
+        <div class="btn-group btn-group-sm" role="group">
+            <input type="radio" class="btn-check" name="exportMode" id="modeCombined" autocomplete="off">
+            <label class="btn btn-outline-dark" for="modeCombined" data-i18n="mode.combined">合併</label>
+            <input type="radio" class="btn-check" name="exportMode" id="modeSeparate" autocomplete="off">
+            <label class="btn btn-outline-dark" for="modeSeparate" data-i18n="mode.separate">分開</label>
+        </div>
         <button class="btn btn-success btn-sm" onclick="exportPDF()">
             <i class="bi bi-file-earmark-pdf"></i> <span data-i18n="btn.exportPdf">匯出 PDF</span>
         </button>
@@ -132,18 +138,25 @@ const FONT_CSS = {
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <span class="small text-muted" data-i18n="preview.label">即時預覽</span>
                 <div class="btn-group btn-group-sm" role="group">
-                    <input type="radio" class="btn-check" name="lSide" id="lBtnBack" autocomplete="off" checked>
+                    <input type="radio" class="btn-check" name="lSide" id="lBtnCombined" autocomplete="off" checked>
+                    <label class="btn btn-outline-dark" for="lBtnCombined" onclick="setListSide('combined')" data-i18n="side.combined">合</label>
+                    <input type="radio" class="btn-check" name="lSide" id="lBtnBack" autocomplete="off">
                     <label class="btn btn-outline-dark" for="lBtnBack" onclick="setListSide('back')" data-i18n="side.back">背</label>
                     <input type="radio" class="btn-check" name="lSide" id="lBtnFront" autocomplete="off">
                     <label class="btn btn-outline-dark" for="lBtnFront" onclick="setListSide('front')" data-i18n="side.front">正</label>
                 </div>
             </div>
             <div id="lCardWrapper" style="width:100%; overflow:hidden; position:relative; border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,.22);">
-                <div id="lCardNative" style="width:1063px; height:638px; position:relative; transform-origin:top left;">
-                    <img id="lTplImg" draggable="false"
-                         src="/template/raw/{{ session.id }}/back"
+                <div id="lCardNative" style="width:1063px; height:1276px; position:relative; transform-origin:top left;">
+                    <img id="lTplImgFront" draggable="false"
+                         src="/template/raw/{{ session.id }}/front"
                          style="width:1063px; height:638px; display:block; object-fit:fill;" alt="">
-                    {{ card_text_overlay('lTextOverlay', card_config, employees[0] if employees else none) }}
+                    <div id="lBackSection" style="position:relative; width:1063px; height:638px;">
+                        <img id="lTplImg" draggable="false"
+                             src="/template/raw/{{ session.id }}/back"
+                             style="width:1063px; height:638px; display:block; object-fit:fill;" alt="">
+                        {{ card_text_overlay('lTextOverlay', card_config, employees[0] if employees else none) }}
+                    </div>
                 </div>
             </div>
         </div>

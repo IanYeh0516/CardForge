@@ -7,8 +7,8 @@ from flask import Blueprint, request, jsonify, send_file
 
 import config
 import db
-from services.card_renderer import render_preview, render_back
-from services.pdf_service import generate_pdf, generate_single_pdf
+from services.card_renderer import render_preview, render_back, render_combined
+from services.pdf_service import generate_pdf, generate_single_pdf, generate_combined_pdf
 
 export_bp = Blueprint('export', __name__)
 
@@ -77,6 +77,47 @@ def export_jpg(session_id):
         back_img.save(back_path, format='JPEG', quality=95, dpi=(dpi, dpi))
         saved_files.append(back_path)
 
+    filenames = [os.path.basename(f) for f in saved_files]
+    return jsonify(ok=True, count=len(filenames), files=filenames)
+
+
+@export_bp.route('/export/combined/jpg/<int:session_id>', methods=['POST'])
+def export_combined_jpg(session_id):
+    employees = db.get_employees(session_id)
+    if not employees:
+        return jsonify(error='No employee data'), 404
+    card_config = db.get_card_config(session_id)
+    dpi = card_config.get('dpi', config.PRINT_DPI)
+
+    data = request.get_json() or {}
+    selected_ids = set(data['ids']) if data.get('ids') else None
+    if selected_ids:
+        employees = [e for e in employees if e['id'] in selected_ids]
+
+    saved_files = []
+    for emp in employees:
+        field_data = emp['field_data']
+        stem = str(field_data.get('ID', '')).strip() or str(emp['id'])
+        combined_img = render_combined(field_data, card_config, dpi=dpi)
+        jpg_path = os.path.join(config.EXPORTS_DIR, f'{stem}_combined.jpg')
+        combined_img.save(jpg_path, format='JPEG', quality=95, dpi=(dpi, dpi))
+        saved_files.append(jpg_path)
+
+    filenames = [os.path.basename(f) for f in saved_files]
+    return jsonify(ok=True, count=len(filenames), files=filenames)
+
+
+@export_bp.route('/export/combined/pdf/<int:session_id>', methods=['POST'])
+def export_combined_pdf(session_id):
+    employees = db.get_employees(session_id)
+    if not employees:
+        return jsonify(error='No employee data'), 404
+    card_config = db.get_card_config(session_id)
+
+    data = request.get_json() or {}
+    selected_ids = set(data['ids']) if data.get('ids') else None
+
+    saved_files = generate_combined_pdf(employees, card_config, selected_ids=selected_ids)
     filenames = [os.path.basename(f) for f in saved_files]
     return jsonify(ok=True, count=len(filenames), files=filenames)
 

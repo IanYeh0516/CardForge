@@ -8,8 +8,9 @@ function scaleCard(wrapperId, nativeId) {
     const native  = document.getElementById(nativeId);
     if (!wrapper || !native) return;
     const scale = wrapper.offsetWidth / CARD_W;
+    const nativeH = parseInt(native.style.height) || CARD_H;
     native.style.transform = `scale(${scale})`;
-    wrapper.style.height   = (CARD_H * scale) + 'px';
+    wrapper.style.height   = (nativeH * scale) + 'px';
 }
 
 function applyFontFamilies(overlayId) {

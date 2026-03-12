@@ -31,6 +31,8 @@ const I18N = {
         'btn.exportPdf': '匯出 PDF',
         'btn.exportJpg': '匯出 JPG',
         'btn.exportExcel': '匯出 Excel',
+        'mode.combined': '合併',
+        'mode.separate': '分開',
         'btn.openFolder': '開啟匯出資料夾',
         'btn.save': '儲存',
         'btn.add': '新增',
@@ -47,6 +49,7 @@ const I18N = {
 
         // List preview
         'preview.label': '即時預覽',
+        'side.combined': '合',
         'side.back': '背',
         'side.front': '正',
 
@@ -149,6 +152,8 @@ const I18N = {
         'btn.exportPdf': 'Export PDF',
         'btn.exportJpg': 'Export JPG',
         'btn.exportExcel': 'Export Excel',
+        'mode.combined': 'Combined',
+        'mode.separate': 'Separate',
         'btn.openFolder': 'Open export folder',
         'btn.save': 'Save',
         'btn.add': 'Add',
@@ -163,6 +168,7 @@ const I18N = {
         'batch.cancel': 'Cancel',
 
         'preview.label': 'Live Preview',
+        'side.combined': 'C',
         'side.back': 'B',
         'side.front': 'F',
 

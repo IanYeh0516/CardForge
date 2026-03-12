@@ -1,13 +1,37 @@
 // ══════════════════════════════════════════════════════════
 //  List Tab — live preview
 // ══════════════════════════════════════════════════════════
-let listSide = 'back';
+let listSide = 'combined';
 
 function setListSide(side) {
     listSide = side;
-    const img = document.getElementById('lTplImg');
-    if (img) img.src = `/template/raw/${SESSION_ID}/${side}?t=${Date.now()}`;
-    document.getElementById('lTextOverlay').style.display = side === 'back' ? '' : 'none';
+    const frontImg    = document.getElementById('lTplImgFront');
+    const backImg     = document.getElementById('lTplImg');
+    const backSection = document.getElementById('lBackSection');
+    const overlay     = document.getElementById('lTextOverlay');
+    const native      = document.getElementById('lCardNative');
+    const ts = Date.now();
+
+    if (side === 'combined') {
+        frontImg.style.display = 'block';
+        frontImg.src = `/template/raw/${SESSION_ID}/front?t=${ts}`;
+        backImg.src  = `/template/raw/${SESSION_ID}/back?t=${ts}`;
+        backSection.style.display = '';
+        overlay.style.display = '';
+        native.style.height = (CARD_H * 2) + 'px';
+    } else if (side === 'front') {
+        frontImg.style.display = 'block';
+        frontImg.src = `/template/raw/${SESSION_ID}/front?t=${ts}`;
+        backSection.style.display = 'none';
+        native.style.height = CARD_H + 'px';
+    } else {
+        frontImg.style.display = 'none';
+        backImg.src = `/template/raw/${SESSION_ID}/back?t=${ts}`;
+        backSection.style.display = '';
+        overlay.style.display = '';
+        native.style.height = CARD_H + 'px';
+    }
+    scaleCard('lCardWrapper', 'lCardNative');
 }
 
 function syncListPreviewFromRow(tr) {

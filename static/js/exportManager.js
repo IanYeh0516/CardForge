@@ -106,12 +106,39 @@ async function _exportMultiFile(endpoint) {
     await _pickFolderAndWriteFiles(files);
 }
 
+// ── Export mode toggle (combined / separate) ──────────────
+let _exportMode = localStorage.getItem('exportMode') || 'combined';
+
+function initExportMode() {
+    const combinedRadio  = document.getElementById('modeCombined');
+    const separateRadio  = document.getElementById('modeSeparate');
+    if (!combinedRadio || !separateRadio) return;
+
+    if (_exportMode === 'separate') {
+        separateRadio.checked = true;
+    } else {
+        combinedRadio.checked = true;
+        _exportMode = 'combined';
+    }
+
+    combinedRadio.addEventListener('change', () => { _exportMode = 'combined'; localStorage.setItem('exportMode', 'combined'); });
+    separateRadio.addEventListener('change', () => { _exportMode = 'separate'; localStorage.setItem('exportMode', 'separate'); });
+}
+
+document.addEventListener('DOMContentLoaded', initExportMode);
+
 async function exportPDF() {
-    await _exportMultiFile(`/export/pdf/${SESSION_ID}`);
+    const ep = _exportMode === 'combined'
+        ? `/export/combined/pdf/${SESSION_ID}`
+        : `/export/pdf/${SESSION_ID}`;
+    await _exportMultiFile(ep);
 }
 
 async function exportJPG() {
-    await _exportMultiFile(`/export/jpg/${SESSION_ID}`);
+    const ep = _exportMode === 'combined'
+        ? `/export/combined/jpg/${SESSION_ID}`
+        : `/export/jpg/${SESSION_ID}`;
+    await _exportMultiFile(ep);
 }
 
 async function exportExcel() {

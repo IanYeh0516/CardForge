@@ -166,6 +166,17 @@ def render_front(card_config, dpi=None):
     return img
 
 
+def render_combined(employee_data, card_config, dpi=None):
+    """Render front (top) + back (bottom) combined into one image."""
+    front = render_front(card_config, dpi=dpi)
+    back = render_back(employee_data, card_config, dpi=dpi)
+    w, h = front.size
+    combined = Image.new('RGB', (w, h * 2))
+    combined.paste(front, (0, 0))
+    combined.paste(back, (0, h))
+    return combined
+
+
 def render_preview(employee_data, card_config, side='back'):
     """Render a preview, return JPEG bytes."""
     if side == 'front':

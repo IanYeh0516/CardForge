@@ -5,7 +5,7 @@ from reportlab.pdfgen import canvas as rl_canvas
 from reportlab.lib.utils import ImageReader
 
 import config
-from services.card_renderer import render_front, render_back
+from services.card_renderer import render_front, render_back, render_combined
 
 # 1 inch = 72 ReportLab points
 _INCH_TO_PTS = 72.0
@@ -83,3 +83,32 @@ def generate_single_pdf(employee, card_config):
     _write_employee_pages(c, employee, card_config, dpi, page_w, page_h)
     c.save()
     return filepath
+
+
+def generate_combined_pdf(employees, card_config, selected_ids=None):
+    """One PDF per employee with front+back combined on a single page.
+    Page size is double-height (w × 2h). Returns list of saved file paths."""
+    if selected_ids:
+        employees = [e for e in employees if e['id'] in selected_ids]
+
+    page_w, page_h = _page_size_pts(card_config)
+    combined_page_h = page_h * 2
+    dpi = card_config.get('dpi', config.PRINT_DPI)
+
+    saved_files = []
+    for emp in employees:
+        field_data = emp.get('field_data', emp)
+        stem = _emp_stem(field_data, emp.get('id', 0))
+        filepath = os.path.join(config.EXPORTS_DIR, f"{stem}_combined.pdf")
+
+        c = rl_canvas.Canvas(filepath, pagesize=(page_w, combined_page_h))
+        combined_img = render_combined(field_data, card_config, dpi=dpi)
+        buf = BytesIO()
+        combined_img.save(buf, format='PNG')
+        buf.seek(0)
+        c.drawImage(ImageReader(buf), 0, 0, width=page_w, height=combined_page_h)
+        c.showPage()
+        c.save()
+        saved_files.append(filepath)
+
+    return saved_files
